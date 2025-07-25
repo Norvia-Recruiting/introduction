@@ -441,93 +441,95 @@
         </div>
     </div>
 
-    <script>
-        let currentPage = 1;
-        const totalPages = 8;
-        let timers = [];
-        
-        function updateProgressBar() {
-            const progress = (currentPage / totalPages) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
+  <script>
+    let currentPage = 1;
+    const totalPages = 8;
+    let timers = [];
+
+    function updateProgressBar() {
+        const progress = (currentPage / totalPages) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    function nextPage() {
+        document.getElementById(`page${currentPage}`).classList.remove('active-page');
+        currentPage++;
+        document.getElementById(`page${currentPage}`).classList.add('active-page');
+        updateProgressBar();
+    }
+
+    function startQuestions() {
+        nextPage();
+        startTimer('timer1', 60, () => {
+            nextQuestion();
+        });
+    }
+
+    function nextQuestion() {
+        document.getElementById(`page${currentPage}`).classList.remove('active-page');
+        currentPage++;
+        document.getElementById(`page${currentPage}`).classList.add('active-page');
+        updateProgressBar();
+
+        // Stop previous timer
+        if (timers.length > 0) {
+            clearInterval(timers[timers.length - 1]);
         }
-        
-        function nextPage() {
-            document.getElementById(`page${currentPage}`).classList.remove('active-page');
-            currentPage++;
-            document.getElementById(`page${currentPage}`).classList.add('active-page');
-            updateProgressBar();
-        }
-        
-        function startQuestions() {
-            nextPage();
-            startTimer('timer1', 60, () => {
-                document.getElementById('timer1').textContent = "Time's up!";
-                document.getElementById('timer1').style.color = "var(--norvia-red)";
+
+        // Start new timer for questions 2, 3, and 4 (pages 5–7)
+        if (currentPage >= 5 && currentPage <= 7) {
+            const timerId = `timer${currentPage - 4}`;
+            const isLastQuestion = currentPage === 7;
+
+            startTimer(timerId, 60, () => {
+                if (isLastQuestion) {
+                    submitAnswers();
+                } else {
+                    nextQuestion();
+                }
             });
         }
-        
-        function nextQuestion() {
-            document.getElementById(`page${currentPage}`).classList.remove('active-page');
-            currentPage++;
-            document.getElementById(`page${currentPage}`).classList.add('active-page');
-            updateProgressBar();
-            
-            // Stop previous timer
-            if (timers.length > 0) {
-                clearInterval(timers[timers.length - 1]);
-            }
-            
-            // Start new timer
-            if (currentPage <= 6) {
-                const timerId = `timer${currentPage - 4}`;
-                startTimer(timerId, 60, () => {
-                    document.getElementById(timerId).textContent = "Time's up!";
-                    document.getElementById(timerId).style.color = "var(--norvia-red)";
-                });
-            }
+    }
+
+    function submitAnswers() {
+        // Stop last timer
+        if (timers.length > 0) {
+            clearInterval(timers[timers.length - 1]);
         }
-        
-        function submitAnswers() {
-            // Stop last timer
-            if (timers.length > 0) {
-                clearInterval(timers[timers.length - 1]);
+
+        const answers = {
+            question1: document.getElementById('answer1').value,
+            question2: document.getElementById('answer2').value,
+            question3: document.getElementById('answer3').value,
+            question4: document.getElementById('answer4').value
+        };
+        console.log("Collected answers:", answers);
+
+        nextPage();
+    }
+
+    function startTimer(elementId, seconds, callback) {
+        const timerElement = document.getElementById(elementId);
+        let remaining = seconds;
+
+        const timer = setInterval(() => {
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            if (remaining <= 0) {
+                clearInterval(timer);
+                if (callback) callback();
             }
-            
-            // In a real application, you would send the answers to a server here
-            const answers = {
-                question1: document.getElementById('answer1').value,
-                question2: document.getElementById('answer2').value,
-                question3: document.getElementById('answer3').value,
-                question4: document.getElementById('answer4').value
-            };
-            console.log("Collected answers:", answers);
-            
-            nextPage();
-        }
-        
-        function startTimer(elementId, seconds, callback) {
-            const timerElement = document.getElementById(elementId);
-            let remaining = seconds;
-            
-            const timer = setInterval(() => {
-                const mins = Math.floor(remaining / 60);
-                const secs = remaining % 60;
-                timerElement.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                
-                if (remaining <= 0) {
-                    clearInterval(timer);
-                    if (callback) callback();
-                }
-                
-                remaining--;
-            }, 1000);
-            
-            timers.push(timer);
-            return timer;
-        }
-        
-        // Initialize progress bar
-        updateProgressBar();
-    </script>
-</body>
-</html>
+
+            remaining--;
+        }, 1000);
+
+        timers.push(timer);
+        return timer;
+    }
+
+    // Initialize progress bar
+    updateProgressBar();
+</script>
+

@@ -459,12 +459,12 @@
     }
 
     function startQuestions() {
-        nextPage(); // to page 4
-        startQuestionTimer(1); // start timer1
+        nextPage(); // Go to question 1 (page 4)
+        startTimerForQuestion(1);
     }
 
     function nextQuestion() {
-        // Stop previous timer if active
+        // Clear any active timer
         if (timers.length > 0) {
             clearInterval(timers[timers.length - 1]);
         }
@@ -474,20 +474,18 @@
         document.getElementById(`page${currentPage}`).classList.add('active-page');
         updateProgressBar();
 
-        const questionIndex = currentPage - 3; // Page 4 = Question 1
+        const questionIndex = currentPage - 3;
 
         if (questionIndex <= 4) {
             if (questionIndex === 4) {
-                // last question → submit automatically after time
-                startQuestionTimer(questionIndex, submitAnswers);
+                startTimerForQuestion(questionIndex, submitAnswers);
             } else {
-                // question 1–3
-                startQuestionTimer(questionIndex, nextQuestion);
+                startTimerForQuestion(questionIndex, nextQuestion);
             }
         }
     }
 
-    function startQuestionTimer(index, callback) {
+    function startTimerForQuestion(index, callback) {
         const timerId = `timer${index}`;
         const timerElement = document.getElementById(timerId);
         let remaining = 60;
@@ -524,7 +522,8 @@
         nextPage();
     }
 
-    // Initialize progress bar
+    // Initial setup
     updateProgressBar();
 </script>
+
 

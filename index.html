@@ -459,12 +459,12 @@
     }
 
     function startQuestions() {
-        nextPage(); // Go to question 1 (page 4)
-        startTimerForQuestion(1);
+        nextPage(); // Go to page 4 (Question 1)
+        startTimerForQuestion(1, nextQuestion); // ✅ Callback ergänzt
     }
 
     function nextQuestion() {
-        // Clear any active timer
+        // Stop the previous timer if running
         if (timers.length > 0) {
             clearInterval(timers[timers.length - 1]);
         }
@@ -474,11 +474,11 @@
         document.getElementById(`page${currentPage}`).classList.add('active-page');
         updateProgressBar();
 
-        const questionIndex = currentPage - 3;
+        const questionIndex = currentPage - 3; // Page 4 = Q1 → 4 - 3 = 1
 
         if (questionIndex <= 4) {
             if (questionIndex === 4) {
-                startTimerForQuestion(questionIndex, submitAnswers);
+                startTimerForQuestion(questionIndex, submitAnswers); // Last one
             } else {
                 startTimerForQuestion(questionIndex, nextQuestion);
             }
@@ -497,7 +497,7 @@
 
             if (remaining <= 0) {
                 clearInterval(timer);
-                if (callback) callback();
+                if (callback) callback(); // ✅ automatische Weiterleitung nach Ablauf
             }
 
             remaining--;
@@ -519,11 +519,10 @@
         };
 
         console.log("Collected answers:", answers);
-        nextPage();
+        nextPage(); // Go to completion page
     }
 
-    // Initial setup
+    // Initialize progress bar
     updateProgressBar();
 </script>
-
 

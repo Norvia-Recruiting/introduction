@@ -356,10 +356,11 @@
         <div class="page active-page" id="page1">
             <div class="terminal-effect"></div>
             <h1>Welcome to NORVIA - Where AI Meets Human Potential.</h1>
-            <p>You have applied for the position <strong>"Talent Acquisition & AI Integration Recruiter"</strong> at NORVIA – congratulations!</p>
-            <p>[The job description for the position you applied for can be found in the plastic sleeve labeled with the number 1 on your desk. Please read it carefully to get some context]</p>
           <p>We are a Scandinavian, global leader in digital HR technology. At NORVIA, we believe in combining human expertise with technology to shape the future of recruiting.</p>
-            <p>You are now invited to participate in the next step of our recruiting process, in which we would like to get to know you better on a personal level.</p>
+            <p>You’ve applied for a position with us – thank you for taking that step!</p>
+<p>We’d love to get to know you a bit more on a personal level. Not through a formal interview – just a few short questions where you can share something about yourself in your own words.</p>
+<p>This won’t affect your application in any way. It’s simply a chance for us to better understand the people behind the profiles – and to shape a more personal and thoughtful hiring experience.</p>
+<p>There’s no pressure and no right or wrong answers – just be yourself.</p>
             <button class="btn" onclick="nextPage()">Continue</button>
         </div>
 
@@ -368,7 +369,7 @@
             <div class="terminal-effect"></div>
             <h1>Written Reflection - What This Step Is About</h1>
             <p>In this part of the process, you will be asked to answer a few short personal questions in written form. </p>
-            <p>There are no right or wrong answers – your responses will primarily serve to get to know you on a personal level without having an impact on the success of your application.</p>
+            <p>And again: Your responses will primarily serve to get to know you on a personal level without having an impact on the success of your application.</p>
             <button class="btn" onclick="nextPage()">Continue</button>
         </div>
 
@@ -376,8 +377,8 @@
         <div class="page" id="page3">
             <div class="terminal-effect"></div>
             <h1>What you will do</h1>
-            <p>You will be asked to answer three questions in writing. Please respond in about 10 sentences per question, using clear and natural language.</p>
-            <p>You will have 3 minutes per question to write down your thoughts.</p>
+            <p>You will be asked to answer four questions in writing. Please respond in about 5-10 sentences per question, using clear and natural language.</p>
+            <p>You will have 1 minute per question to write down your thoughts.</p>
           <p>You may answer in whichever language you feel most comfortable with.</p>
 
            <p style="color: red;">
@@ -396,17 +397,17 @@
             <div class="terminal-effect"></div>
             <h1>Question 1</h1>
             <p>Tell us a little about yourself. What's your background, and what are things that fascinate you about recruiting.</p>
-            <div class="timer" id="timer1">03:00</div>
+            <div class="timer" id="timer1">01:00</div>
             <textarea id="answer1" placeholder="Type your response here..."></textarea>
             <button class="btn" onclick="nextQuestion()">Next Question</button>
         </div>
 
-        <!-- Page 5 - Question 2 -->
+      <!-- Page 5 - Question 2 -->
         <div class="page" id="page5">
             <div class="terminal-effect"></div>
             <h1>Question 2</h1>
-            <p>What kind of work environment helps you do your best? Feel free to share an example of a situation where you felt especially motivated or comfortable in a team or project.</p>
-            <div class="timer" id="timer2">03:00</div>
+            <p>Tell us a little about yourself. What's your background, and what are things that fascinate you about recruiting.</p>
+            <div class="timer" id="timer2">01:00</div>
             <textarea id="answer2" placeholder="Type your response here..."></textarea>
             <button class="btn" onclick="nextQuestion()">Next Question</button>
         </div>
@@ -415,14 +416,24 @@
         <div class="page" id="page6">
             <div class="terminal-effect"></div>
             <h1>Question 3</h1>
-            <p>What is something you'd like to improve about yourself professionally? How are you working on that?</p>
-            <div class="timer" id="timer3">03:00</div>
+            <p>What kind of work environment helps you do your best? Feel free to share an example of a situation where you felt especially motivated or comfortable in a team or project.</p>
+            <div class="timer" id="timer3">01:00</div>
             <textarea id="answer3" placeholder="Type your response here..."></textarea>
+            <button class="btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <!-- Page 7 - Question 4 -->
+        <div class="page" id="page7">
+            <div class="terminal-effect"></div>
+            <h1>Question 4</h1>
+            <p>What is something you'd like to improve about yourself professionally? How are you working on that?</p>
+            <div class="timer" id="timer4">01:00</div>
+            <textarea id="answer4" placeholder="Type your response here..."></textarea>
             <button class="btn" onclick="submitAnswers()">Submit Answers</button>
         </div>
 
-        <!-- Page 7 - Completion -->
-        <div class="page" id="page7">
+        <!-- Page 8 - Completion -->
+        <div class="page" id="page8">
             <div class="terminal-effect"></div>
             <h1>End of session</h1>
             <p>Thanks for getting to know you better. You can now close this tab and return to the main survey page.</p>
@@ -431,7 +442,7 @@
 
     <script>
         let currentPage = 1;
-        const totalPages = 7;
+        const totalPages = 8;
         let timers = [];
         
         function updateProgressBar() {
@@ -448,7 +459,7 @@
         
         function startQuestions() {
             nextPage();
-            startTimer('timer1', 180, () => {
+            startTimer('timer1', 60, () => {
                 document.getElementById('timer1').textContent = "Time's up!";
                 document.getElementById('timer1').style.color = "var(--norvia-red)";
             });
@@ -467,8 +478,8 @@
             
             // Start new timer
             if (currentPage <= 6) {
-                const timerId = `timer${currentPage - 3}`;
-                startTimer(timerId, 180, () => {
+                const timerId = `timer${currentPage - 4}`;
+                startTimer(timerId, 60, () => {
                     document.getElementById(timerId).textContent = "Time's up!";
                     document.getElementById(timerId).style.color = "var(--norvia-red)";
                 });
@@ -486,6 +497,7 @@
                 question1: document.getElementById('answer1').value,
                 question2: document.getElementById('answer2').value,
                 question3: document.getElementById('answer3').value
+                question4: document.getElementById('answer4').value
             };
             console.log("Collected answers:", answers);
             

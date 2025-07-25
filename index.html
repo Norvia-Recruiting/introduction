@@ -441,7 +441,7 @@
         </div>
     </div>
 
-  <script>
+<script>
     let currentPage = 1;
     const totalPages = 8;
     let timers = [];
@@ -459,58 +459,38 @@
     }
 
     function startQuestions() {
-        nextPage();
-        startTimer('timer1', 60, () => {
-            nextQuestion();
-        });
+        nextPage(); // to page 4
+        startQuestionTimer(1); // start timer1
     }
 
     function nextQuestion() {
+        // Stop previous timer if active
+        if (timers.length > 0) {
+            clearInterval(timers[timers.length - 1]);
+        }
+
         document.getElementById(`page${currentPage}`).classList.remove('active-page');
         currentPage++;
         document.getElementById(`page${currentPage}`).classList.add('active-page');
         updateProgressBar();
 
-        // Stop previous timer
-        if (timers.length > 0) {
-            clearInterval(timers[timers.length - 1]);
-        }
+        const questionIndex = currentPage - 3; // Page 4 = Question 1
 
-        // Start new timer for questions 2, 3, and 4 (pages 5–7)
-        if (currentPage >= 5 && currentPage <= 7) {
-            const timerId = `timer${currentPage - 4}`;
-            const isLastQuestion = currentPage === 7;
-
-            startTimer(timerId, 60, () => {
-                if (isLastQuestion) {
-                    submitAnswers();
-                } else {
-                    nextQuestion();
-                }
-            });
+        if (questionIndex <= 4) {
+            if (questionIndex === 4) {
+                // last question → submit automatically after time
+                startQuestionTimer(questionIndex, submitAnswers);
+            } else {
+                // question 1–3
+                startQuestionTimer(questionIndex, nextQuestion);
+            }
         }
     }
 
-    function submitAnswers() {
-        // Stop last timer
-        if (timers.length > 0) {
-            clearInterval(timers[timers.length - 1]);
-        }
-
-        const answers = {
-            question1: document.getElementById('answer1').value,
-            question2: document.getElementById('answer2').value,
-            question3: document.getElementById('answer3').value,
-            question4: document.getElementById('answer4').value
-        };
-        console.log("Collected answers:", answers);
-
-        nextPage();
-    }
-
-    function startTimer(elementId, seconds, callback) {
-        const timerElement = document.getElementById(elementId);
-        let remaining = seconds;
+    function startQuestionTimer(index, callback) {
+        const timerId = `timer${index}`;
+        const timerElement = document.getElementById(timerId);
+        let remaining = 60;
 
         const timer = setInterval(() => {
             const mins = Math.floor(remaining / 60);
@@ -526,7 +506,22 @@
         }, 1000);
 
         timers.push(timer);
-        return timer;
+    }
+
+    function submitAnswers() {
+        if (timers.length > 0) {
+            clearInterval(timers[timers.length - 1]);
+        }
+
+        const answers = {
+            question1: document.getElementById('answer1').value,
+            question2: document.getElementById('answer2').value,
+            question3: document.getElementById('answer3').value,
+            question4: document.getElementById('answer4').value
+        };
+
+        console.log("Collected answers:", answers);
+        nextPage();
     }
 
     // Initialize progress bar
